@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare AI - AI Chatbot</title>
+    <link href="./static/css/vendors.77bf307e.css" rel="stylesheet" />
+    <link href="./static/css/main.d5782095.css" rel="stylesheet" />
+    <link href="./static/img/logo.png" rel="icon" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <nav class="bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <a href="/dashboard.html" class="flex items-center gap-2">
+                <div class="bg-blue-600 p-1.5 rounded-lg">
+                    <img src="./static/img/logo.png" class="h-6 w-6 brightness-200 grayscale contrast-200" alt="Logo">
+                </div>
+                <span class="text-xl font-bold text-slate-900 tracking-tight">MediCare AI</span>
+            </a>
+        </div>
+        <div class="hidden md:flex items-center gap-1 bg-gray-50 p-1 rounded-full border border-gray-100">
+            <a href="/dashboard.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Home
+            </a>
+            <a href="/symptom_checker.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Symptom Checker
+            </a>
+            <a href="/chatbot.html" class="px-4 py-1.5 bg-blue-600 text-white rounded-full text-sm font-medium shadow-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                AI Chatbot
+            </a>
+            <a href="/drug_checker.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                Drug Checker
+            </a>
+            <a href="/history.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                History
+            </a>
+            <a href="#" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                Profile
+            </a>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="text-right hidden sm:block">
+                <div class="text-sm font-bold text-slate-900" id="user-name">User Name</div>
+                <div class="text-xs text-slate-500" id="user-email">user@example.com</div>
+            </div>
+            <button onclick="logout()" class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-12">
+        <div class="text-center mb-8">
+            <div class="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-200">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900">AI Health Assistant</h1>
+            <p class="text-slate-500 text-lg">Ask health questions and get helpful guidance</p>
+        </div>
+
+        <div class="max-w-3xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+            <div id="chat-log" class="p-6 space-y-4 h-[480px] overflow-y-auto bg-slate-50">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                        <div class="font-bold text-slate-900 mb-1">Assistant</div>
+                        <div class="text-slate-700">Hi! Describe your symptoms or ask a health question. I can suggest possible conditions, home care tips, and OTC options.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-200 bg-white">
+                <form id="chat-form" class="flex gap-3">
+                    <input id="chat-input" type="text" class="flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Type your message..." autocomplete="off">
+                    <button class="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-sm">Send</button>
+                </form>
+                <div class="mt-3 text-xs text-slate-500">Educational purpose only. Not a substitute for medical advice.</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const email = localStorage.getItem('userEmail') || 'user@example.com';
+        const name = email.split('@')[0];
+        document.getElementById('user-name').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+        document.getElementById('user-email').textContent = email;
+        function logout() { localStorage.removeItem('userEmail'); window.location.href = '/index.html'; }
+
+        const log = document.getElementById('chat-log');
+        const form = document.getElementById('chat-form');
+        const input = document.getElementById('chat-input');
+
+        function addUser(msg) {
+            log.insertAdjacentHTML('beforeend', `
+                <div class="flex items-start gap-3 justify-end">
+                    <div class="bg-blue-600 text-white rounded-2xl p-4 max-w-[70%] shadow-sm">${msg}</div>
+                </div>
+            `);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function addAssistant(msg) {
+            log.insertAdjacentHTML('beforeend', `
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl p-4 max-w-[70%] shadow-sm">
+                        <div class="font-bold text-slate-900 mb-1">Assistant</div>
+                        <div class="text-slate-700">${msg}</div>
+                    </div>
+                </div>
+            `);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function reply(msg) {
+            const q = msg.toLowerCase();
+            if (q.includes('fever') || q.includes('cough') || q.includes('sore')) {
+                return [
+                    'Based on your description, this may be consistent with a viral upper respiratory infection.',
+                    'Stay hydrated, rest, and consider acetaminophen for fever if appropriate.',
+                    'Seek in-person care if high fever persists >3 days, severe sore throat, or breathing difficulty.'
+                ].join(' ');
+            }
+            if (q.includes('pain') && q.includes('chest')) {
+                return [
+                    'Chest pain can be serious. If pain is severe, with shortness of breath, sweating, or radiates to arm/jaw, seek emergency care.',
+                    'For mild musculoskeletal chest discomfort, rest and over-the-counter pain relief may help.'
+                ].join(' ');
+            }
+            if (q.includes('headache')) {
+                return [
+                    'For mild headaches, hydration, rest, and OTC options like acetaminophen or ibuprofen may help.',
+                    'Seek care if headache is severe, with neurological symptoms, or after head injury.'
+                ].join(' ');
+            }
+            return 'I can help with general guidance on symptoms, home care tips, and OTC options. Share your symptoms (e.g., fever, sore throat, cough), and I will suggest next steps.';
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const msg = input.value.trim();
+            if (!msg) return;
+            addUser(msg);
+            input.value = '';
+            setTimeout(() => addAssistant(reply(msg)), 350);
+        });
+    </script>
+</body>
+</html>
