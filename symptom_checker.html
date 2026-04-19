@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare AI - Symptom Checker</title>
+    <link href="./static/css/vendors.77bf307e.css" rel="stylesheet" />
+    <link href="./static/css/main.d5782095.css" rel="stylesheet" />
+    <link href="./static/img/logo.png" rel="icon" />
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+        /* Custom range slider styling */
+        input[type=range] {
+            height: 6px; 
+            border-radius: 5px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: -7px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 5px;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb', // Blue-600
+                        secondary: '#475569', // Slate-600
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+        <!-- Left: Logo -->
+        <div class="flex items-center gap-2">
+            <a href="/dashboard.html" class="flex items-center gap-2">
+                <div class="bg-blue-600 p-1.5 rounded-lg">
+                    <img src="./static/img/logo.png" class="h-6 w-6 brightness-200 grayscale contrast-200" alt="Logo">
+                </div>
+                <span class="text-xl font-bold text-slate-900 tracking-tight">MediCare AI</span>
+            </a>
+        </div>
+
+        <!-- Center: Navigation Links -->
+        <div class="hidden md:flex items-center gap-1 bg-gray-50 p-1 rounded-full border border-gray-100">
+            <a href="/dashboard.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Home
+            </a>
+            <a href="/symptom_checker.html" class="px-4 py-1.5 bg-blue-600 text-white rounded-full text-sm font-medium shadow-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Symptom Checker
+            </a>
+            <a href="/chatbot.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                AI Chatbot
+            </a>
+            <a href="/drug_checker.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                Drug Checker
+            </a>
+            <a href="/history.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                History
+            </a>
+            <a href="#" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                Profile
+            </a>
+        </div>
+
+        <!-- Right: User Profile -->
+        <div class="flex items-center gap-4">
+            <div class="text-right hidden sm:block">
+                <div class="text-sm font-bold text-slate-900" id="user-name">User Name</div>
+                <div class="text-xs text-slate-500" id="user-email">user@example.com</div>
+            </div>
+            <button onclick="logout()" class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12 flex flex-col items-center">
+        
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-200">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Symptom Checker</h1>
+            <p class="text-xl text-slate-500">Select your symptoms and get AI-powered health insights</p>
+        </div>
+
+        <!-- Search Container -->
+        <div class="w-full max-w-2xl">
+            <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden mb-6">
+                <div class="p-8 pb-4">
+                    <h2 class="text-xl font-bold text-slate-900 mb-6">Tell us what you're experiencing</h2>
+                    
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-6 w-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <input type="text" id="symptom-input" 
+                            class="block w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
+                            placeholder="e.g. fever, headache, cough..."
+                            autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- Suggestions Dropdown (Hidden by default) -->
+                <div id="suggestions-list" class="hidden border-t border-slate-100 max-h-80 overflow-y-auto">
+                    <!-- Items will be injected here via JS -->
+                </div>
+                
+                <div class="p-4"></div> <!-- Spacer -->
+            </div>
+
+            <!-- Selected Symptoms List -->
+            <div id="selected-symptoms" class="w-full">
+                <!-- Selected items will appear here -->
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // User Info Logic
+        const email = localStorage.getItem('userEmail') || 'user@example.com';
+        const name = email.split('@')[0];
+        document.getElementById('user-name').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+        document.getElementById('user-email').textContent = email;
+
+        function logout() {
+            localStorage.removeItem('userEmail');
+            window.location.href = '/index.html';
+        }
+
+        const symptoms = [
+            // General
+            { id: 'fever', name: 'Fever', description: 'Elevated body temperature above normal range', category: 'General' },
+            { id: 'chills', name: 'Chills', description: 'Feeling cold and shivering', category: 'General' },
+            { id: 'sweats', name: 'Night Sweats', description: 'Excessive sweating during sleep', category: 'General' },
+            { id: 'fatigue', name: 'Fatigue', description: 'Overall feeling of tiredness or lack of energy', category: 'General' },
+            { id: 'malaise', name: 'Malaise', description: 'General feeling of discomfort or uneasiness', category: 'General' },
+            { id: 'weight_loss', name: 'Unintentional Weight Loss', description: 'Weight loss without trying', category: 'General' },
+            { id: 'weight_gain', name: 'Unintentional Weight Gain', description: 'Weight gain without clear cause', category: 'General' },
+            { id: 'loss_of_appetite', name: 'Loss of Appetite', description: 'Reduced desire to eat', category: 'General' },
+
+            // Respiratory
+            { id: 'cough', name: 'Cough', description: 'Sudden, forceful hacking sound to clear airways', category: 'Respiratory' },
+            { id: 'sore_throat', name: 'Sore Throat', description: 'Pain, scratchiness or irritation of the throat', category: 'Respiratory' },
+            { id: 'shortness_of_breath', name: 'Shortness of Breath', description: 'Intense tightening in the chest, air hunger', category: 'Respiratory' },
+            { id: 'runny_nose', name: 'Runny Nose', description: 'Watery nasal discharge', category: 'Respiratory' },
+            { id: 'nasal_congestion', name: 'Nasal Congestion', description: 'Blocked or stuffy nose', category: 'Respiratory' },
+            { id: 'sneezing', name: 'Sneezing', description: 'Sudden involuntary expulsion of air from nose and mouth', category: 'Respiratory' },
+            { id: 'wheezing', name: 'Wheezing', description: 'Whistling sound while breathing', category: 'Respiratory' },
+            { id: 'chest_tightness', name: 'Chest Tightness', description: 'Sensation of pressure in the chest', category: 'Respiratory' },
+
+            // Gastrointestinal
+            { id: 'nausea', name: 'Nausea', description: 'Unease of the stomach that often comes before vomiting', category: 'Gastrointestinal' },
+            { id: 'vomiting', name: 'Vomiting', description: 'Forceful expulsion of stomach contents', category: 'Gastrointestinal' },
+            { id: 'diarrhea', name: 'Diarrhea', description: 'Loose, watery bowel movements', category: 'Gastrointestinal' },
+            { id: 'constipation', name: 'Constipation', description: 'Difficulty passing stools', category: 'Gastrointestinal' },
+            { id: 'abdominal_pain', name: 'Abdominal Pain', description: 'Pain that occurs between the chest and pelvic regions', category: 'Gastrointestinal' },
+            { id: 'bloating', name: 'Bloating', description: 'Full or tight feeling in the abdomen', category: 'Gastrointestinal' },
+            { id: 'heartburn', name: 'Heartburn', description: 'Burning pain in the chest after eating', category: 'Gastrointestinal' },
+
+            // Neurological
+            { id: 'headache', name: 'Headache', description: 'Pain or discomfort in the head or face', category: 'Neurological' },
+            { id: 'dizziness', name: 'Dizziness', description: 'Sensation of spinning or losing balance', category: 'Neurological' },
+            { id: 'lightheadedness', name: 'Lightheadedness', description: 'Feeling faint or about to pass out', category: 'Neurological' },
+            { id: 'confusion', name: 'Confusion', description: 'Difficulty thinking clearly', category: 'Neurological' },
+            { id: 'numbness', name: 'Numbness', description: 'Loss of sensation in an area', category: 'Neurological' },
+            { id: 'tingling', name: 'Tingling', description: 'Pins-and-needles sensation', category: 'Neurological' },
+
+            // Musculoskeletal
+            { id: 'joint_pain', name: 'Joint Pain', description: 'Pain or discomfort in joints', category: 'Musculoskeletal' },
+            { id: 'muscle_aches', name: 'Muscle Aches', description: 'Soreness or pain in muscles', category: 'Musculoskeletal' },
+            { id: 'back_pain', name: 'Back Pain', description: 'Pain in the upper or lower back', category: 'Musculoskeletal' },
+            { id: 'neck_pain', name: 'Neck Pain', description: 'Pain or stiffness in the neck', category: 'Musculoskeletal' },
+            { id: 'stiffness', name: 'Stiffness', description: 'Reduced flexibility in joints or muscles', category: 'Musculoskeletal' },
+            { id: 'swelling', name: 'Swelling', description: 'Enlargement due to fluid accumulation', category: 'Musculoskeletal' },
+
+            // Dermatological
+            { id: 'rash', name: 'Rash', description: 'Red or irritated patches on the skin', category: 'Dermatological' },
+            { id: 'itching', name: 'Itching', description: 'Uncomfortable urge to scratch the skin', category: 'Dermatological' },
+            { id: 'redness', name: 'Redness', description: 'Increased blood flow causing red skin', category: 'Dermatological' },
+            { id: 'hives', name: 'Hives', description: 'Raised, itchy welts on the skin', category: 'Dermatological' },
+            { id: 'dry_skin', name: 'Dry Skin', description: 'Rough, flaky skin due to lack of moisture', category: 'Dermatological' },
+
+            // Cardiovascular
+            { id: 'chest_pain', name: 'Chest Pain', description: 'Discomfort or pain anywhere in the front of the body', category: 'Cardiovascular' },
+            { id: 'palpitations', name: 'Palpitations', description: 'Feeling of rapid or irregular heartbeat', category: 'Cardiovascular' },
+            { id: 'leg_swelling', name: 'Leg Swelling', description: 'Fluid buildup causing swelling in legs', category: 'Cardiovascular' },
+
+            // Urinary
+            { id: 'frequent_urination', name: 'Frequent Urination', description: 'Need to urinate more often than usual', category: 'Urinary' },
+            { id: 'painful_urination', name: 'Painful Urination', description: 'Burning or pain when urinating', category: 'Urinary' },
+            { id: 'blood_in_urine', name: 'Blood in Urine', description: 'Presence of blood in the urine', category: 'Urinary' },
+
+            // Endocrine
+            { id: 'thirst', name: 'Excessive Thirst', description: 'Strong persistent need to drink fluids', category: 'Endocrine' },
+            { id: 'heat_intolerance', name: 'Heat Intolerance', description: 'Difficulty tolerating warm temperatures', category: 'Endocrine' },
+            { id: 'cold_intolerance', name: 'Cold Intolerance', description: 'Sensitivity to cold temperatures', category: 'Endocrine' },
+
+            // Eye/Ear/Nose/Throat
+            { id: 'eye_redness', name: 'Eye Redness', description: 'Red appearance of the white of the eye', category: 'Ophthalmologic' },
+            { id: 'blurry_vision', name: 'Blurry Vision', description: 'Reduced sharpness of vision', category: 'Ophthalmologic' },
+            { id: 'photophobia', name: 'Light Sensitivity', description: 'Discomfort in bright light', category: 'Ophthalmologic' },
+            { id: 'ear_pain', name: 'Ear Pain', description: 'Pain in or around the ear', category: 'ENT' },
+            { id: 'tinnitus', name: 'Tinnitus', description: 'Ringing or buzzing in the ears', category: 'ENT' },
+            { id: 'hearing_loss', name: 'Hearing Loss', description: 'Reduced ability to hear sounds', category: 'ENT' }
+        ];
+
+        const input = document.getElementById('symptom-input');
+        const suggestionsList = document.getElementById('suggestions-list');
+        const selectedContainer = document.getElementById('selected-symptoms');
+        
+        // Map to store symptom ID -> intensity (1-10)
+        let selectedSymptoms = new Map();
+
+        input.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            if (query.length < 1) {
+                suggestionsList.classList.add('hidden');
+                return;
+            }
+
+            const matches = symptoms.filter(s => 
+                s.name.toLowerCase().includes(query) && !selectedSymptoms.has(s.id)
+            );
+
+            if (matches.length > 0) {
+                renderSuggestions(matches);
+                suggestionsList.classList.remove('hidden');
+            } else {
+                suggestionsList.classList.add('hidden');
+            }
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!input.contains(e.target) && !suggestionsList.contains(e.target)) {
+                suggestionsList.classList.add('hidden');
+            }
+        });
+
+        function renderSuggestions(matches) {
+            suggestionsList.innerHTML = matches.map(s => `
+                <div onclick="selectSymptom('${s.id}')" class="p-4 hover:bg-slate-50 cursor-pointer border-b border-slate-50 last:border-0 transition-colors group">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="font-bold text-slate-800 text-lg">${s.name}</span>
+                        <span class="text-xs font-semibold px-2 py-1 bg-slate-100 text-slate-500 rounded-md uppercase tracking-wider group-hover:bg-white transition-colors">${s.category}</span>
+                    </div>
+                    <p class="text-slate-500 text-sm">${s.description}</p>
+                </div>
+            `).join('');
+        }
+
+        window.selectSymptom = (id) => {
+            const symptom = symptoms.find(s => s.id === id);
+            if (symptom) {
+                // Default intensity is 3 (Mild)
+                selectedSymptoms.set(id, 3);
+                renderSelected();
+                input.value = '';
+                suggestionsList.classList.add('hidden');
+                input.focus();
+            }
+        };
+
+        window.removeSymptom = (id) => {
+            selectedSymptoms.delete(id);
+            renderSelected();
+        };
+
+        function getSeverityLabel(val) {
+            val = parseInt(val);
+            if (val <= 3) return 'Mild';
+            if (val <= 7) return 'Moderate';
+            return 'Severe';
+        }
+
+        function getSeverityColor(val) {
+            val = parseInt(val);
+            if (val <= 3) return 'text-green-600';
+            if (val <= 7) return 'text-amber-600';
+            return 'text-red-600';
+        }
+
+        window.updateIntensityDisplay = (id, val) => {
+            document.getElementById(`val-${id}`).textContent = val;
+            const label = document.getElementById(`label-${id}`);
+            label.textContent = getSeverityLabel(val);
+            label.className = `text-sm font-bold ${getSeverityColor(val)}`;
+        };
+
+        window.updateIntensityState = (id, val) => {
+            selectedSymptoms.set(id, parseInt(val));
+        };
+
+        function renderSelected() {
+            if (selectedSymptoms.size === 0) {
+                selectedContainer.innerHTML = '';
+                selectedContainer.classList.add('hidden');
+                return;
+            }
+            selectedContainer.classList.remove('hidden');
+
+            // Header
+            let html = `
+                <div class="bg-blue-50/80 backdrop-blur-sm rounded-3xl border border-blue-100 p-6 mb-6">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        Selected Symptoms
+                        <span class="bg-blue-200 text-blue-700 text-xs px-2 py-1 rounded-full">${selectedSymptoms.size}</span>
+                    </h3>
+                    <div class="space-y-4">
+            `;
+
+            // List items
+            selectedSymptoms.forEach((intensity, id) => {
+                const s = symptoms.find(sym => sym.id === id);
+                const severityLabel = getSeverityLabel(intensity);
+                const severityColor = getSeverityColor(intensity);
+                
+                html += `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <div class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                                    ${s.name}
+                                    <span class="px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200">${s.category}</span>
+                                </div>
+                            </div>
+                            <button onclick="removeSymptom('${s.id}')" class="text-slate-400 hover:text-red-500 p-1 hover:bg-red-50 rounded-lg transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3 flex justify-between items-end">
+                            <label class="text-sm font-medium text-slate-600">Intensity: <span id="val-${s.id}">${intensity}</span>/10</label>
+                            <span id="label-${s.id}" class="text-sm font-bold ${severityColor}">${severityLabel}</span>
+                        </div>
+                        
+                        <input type="range" min="1" max="10" value="${intensity}" 
+                            oninput="updateIntensityDisplay('${s.id}', this.value)"
+                            onchange="updateIntensityState('${s.id}', this.value)"
+                            class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+                
+                <button onclick="analyzeSymptoms()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-2xl shadow-xl shadow-blue-200 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 text-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    Analyze with AI
+                </button>
+            `;
+
+            selectedContainer.innerHTML = html;
+        }
+    </script>
+
+    <section id="analysis-results" class="container mx-auto px-6 pb-16 hidden">
+        <div class="max-w-3xl mx-auto">
+            <div id="severity-card" class="rounded-3xl p-6 mb-8 shadow-xl border"></div>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-4">Possible Conditions</h2>
+            <div id="conditions-list" class="space-y-6 mb-10"></div>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-4">Recommended Medicines</h2>
+            <div id="medicines-list" class="space-y-4 mb-6"></div>
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-amber-900 mb-8">
+                Always consult a healthcare professional before taking any medication. Follow dosage instructions carefully.
+            </div>
+            <button onclick="resetAnalysis()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-2xl shadow-xl shadow-blue-200 transition-all">Start New Analysis</button>
+        </div>
+    </section>
+
+    <script>
+        function analyzeSymptoms() {
+            if (selectedSymptoms.size === 0) return;
+            const intensities = Array.from(selectedSymptoms.values());
+            const avg = intensities.reduce((a,b)=>a+b,0) / intensities.length;
+            const score = Math.round((avg/10) * 100);
+            let label = 'MILD';
+            let color = 'bg-green-600';
+            if (score > 66) { label = 'SEVERE'; color = 'bg-red-600'; }
+            else if (score > 33) { label = 'MODERATE'; color = 'bg-amber-500'; }
+
+            const severityHtml = `
+                <div class="flex items-center gap-4">
+                    <div class="${color} w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold text-slate-900">${label} Severity</div>
+                        <div class="text-slate-600">Severity Score: ${score}/100</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('severity-card').className = `rounded-3xl p-6 mb-8 shadow-xl border ${color.replace('bg','border')}-200 ${color.replace('bg','bg')}/10`;
+            document.getElementById('severity-card').innerHTML = severityHtml;
+
+            const ids = Array.from(selectedSymptoms.keys());
+            const has = id => ids.includes(id);
+            const conditions = [];
+            if (has('fever') || has('sore_throat') || has('cough')) {
+                conditions.push({
+                    title: 'Viral infection',
+                    match: 75,
+                    desc: 'Common cold or influenza can present with mild fever, sore throat, cough, and fatigue.',
+                    care: ['Stay hydrated by drinking plenty of fluids.', 'Rest adequately.', 'Consume warm broths or herbal teas to soothe throat.']
+                });
+                conditions.push({
+                    title: 'Bacterial infection (e.g., strep throat)',
+                    match: 60,
+                    desc: 'Strep throat can present with fever and sore throat pain; may need antibiotics.',
+                    care: ['Gargle with warm salt water to reduce throat pain.', 'Drink warm liquids to soothe the throat.', 'Use over-the-counter pain relievers like ibuprofen or acetaminophen.']
+                });
+            }
+            if (has('shortness_of_breath') || has('wheezing') || has('chest_tightness')) {
+                conditions.push({
+                    title: 'Asthma exacerbation',
+                    match: 65,
+                    desc: 'Wheezing and chest tightness with shortness of breath may indicate airway inflammation.',
+                    care: ['Avoid known triggers if possible.', 'Use prescribed inhalers as directed.', 'Seek medical attention if breathing worsens.']
+                });
+            }
+            if (has('nausea') || has('diarrhea') || has('vomiting') || has('abdominal_pain')) {
+                conditions.push({
+                    title: 'Gastroenteritis',
+                    match: 70,
+                    desc: 'Inflammation of the stomach and intestines causing nausea, vomiting, diarrhea, and cramps.',
+                    care: ['Sip oral rehydration solutions.', 'Avoid dairy and high-fat foods temporarily.', 'Introduce bland foods (BRAT diet) as tolerated.']
+                });
+            }
+            if (conditions.length === 0) {
+                conditions.push({
+                    title: 'Non-specific illness',
+                    match: 40,
+                    desc: 'Symptoms do not clearly match a single condition. Monitor and seek care if worsening.',
+                    care: ['Rest and hydration.', 'Over-the-counter pain relief if appropriate.', 'Consult a professional if symptoms persist.']
+                });
+            }
+            document.getElementById('conditions-list').innerHTML = conditions.map(c => `
+                <div class="rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-6 bg-slate-50/50">
+                        <div class="flex items-start justify-between">
+                            <div class="font-bold text-slate-900 text-lg">${c.title}</div>
+                            <span class="text-xs font-semibold px-2 py-1 bg-blue-100 text-blue-700 rounded-full">${c.match}% Match</span>
+                        </div>
+                        <p class="text-slate-600 mt-2">${c.desc}</p>
+                        <div class="mt-4">
+                            <div class="font-semibold text-slate-900 mb-2">Home Care Suggestions:</div>
+                            <ul class="list-disc ml-5 space-y-1 text-slate-700">
+                                ${c.care.map(i=>`<li>${i}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            const meds = [
+                {
+                    name: 'Tylenol', sub: '(Acetaminophen)', badge: 'OTC',
+                    dosage: '500 mg every 4-6 hours as needed, not to exceed 3000 mg per day',
+                    precautions: ['Use with caution in individuals with liver disease','Avoid alcohol while taking this medication','Do not exceed recommended dosage']
+                },
+                {
+                    name: 'Advil', sub: '(Ibuprofen)', badge: 'OTC',
+                    dosage: '200-400 mg every 4-6 hours as needed, not to exceed 1200 mg per day',
+                    precautions: ['Take with food to minimize stomach upset','Avoid if history of gastric ulcers unless advised','Do not mix with other NSAIDs']
+                },
+                {
+                    name: 'Throat Lozenges', sub: '(Various: menthol, phenol)', badge: 'OTC',
+                    dosage: 'Suck one lozenge every 2-4 hours as needed',
+                    precautions: ['Do not exceed recommended dosage','Not recommended for very young children due to choking hazard','Consult doctor if symptoms persist']
+                },
+                {
+                    name: 'Mucinex', sub: '(Guaifenesin)', badge: 'OTC',
+                    dosage: '600-1200 mg every 12 hours, not to exceed 2400 mg per day',
+                    precautions: ['Stay well-hydrated while taking this medication','Use with caution in individuals with cough due to asthma','Consult physician if cough persists for more than 7 days']
+                }
+            ];
+            document.getElementById('medicines-list').innerHTML = meds.map(m => `
+                <div class="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <div class="text-lg font-bold text-emerald-900">${m.name}</div>
+                            <div class="text-emerald-700">${m.sub}</div>
+                        </div>
+                        <span class="text-xs font-semibold px-2 py-1 bg-slate-100 text-slate-700 rounded-full">${m.badge}</span>
+                    </div>
+                    <div class="mt-3">
+                        <div class="font-semibold text-slate-900">Adult Dosage:</div>
+                        <div class="text-slate-700">${m.dosage}</div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="font-semibold text-slate-900">Precautions:</div>
+                        <ul class="list-disc ml-5 space-y-1 text-slate-700">
+                            ${m.precautions.map(p=>`<li>${p}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('analysis-results').classList.remove('hidden');
+            window.scrollTo({ top: document.getElementById('analysis-results').offsetTop - 80, behavior: 'smooth' });
+            
+            const payload = {
+                email,
+                severity_score: score,
+                severity_label: label,
+                symptoms: Array.from(selectedSymptoms.entries()).map(([id,val]) => ({ id, intensity: val })),
+                conditions: conditions.map(c => ({ title: c.title, match: c.match }))
+            };
+            fetch('/api/consultations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(()=>{});
+        }
+
+        function resetAnalysis() {
+            selectedSymptoms.clear();
+            renderSelected();
+            document.getElementById('analysis-results').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

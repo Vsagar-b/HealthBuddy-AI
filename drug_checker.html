@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare AI - Drug Interaction Checker</title>
+    <link href="./static/css/vendors.77bf307e.css" rel="stylesheet" />
+    <link href="./static/css/main.d5782095.css" rel="stylesheet" />
+    <link href="./static/img/logo.png" rel="icon" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <nav class="bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-2">
+            <a href="/dashboard.html" class="flex items-center gap-2">
+                <div class="bg-blue-600 p-1.5 rounded-lg">
+                    <img src="./static/img/logo.png" class="h-6 w-6 brightness-200 grayscale contrast-200" alt="Logo">
+                </div>
+                <span class="text-xl font-bold text-slate-900 tracking-tight">MediCare AI</span>
+            </a>
+        </div>
+        <div class="hidden md:flex items-center gap-1 bg-gray-50 p-1 rounded-full border border-gray-100">
+            <a href="/dashboard.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">Home</a>
+            <a href="/symptom_checker.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">Symptom Checker</a>
+            <a href="/chatbot.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">AI Chatbot</a>
+            <a href="/drug_checker.html" class="px-4 py-1.5 bg-blue-600 text-white rounded-full text-sm font-medium shadow-sm flex items-center gap-2">Drug Checker</a>
+            <a href="/history.html" class="px-4 py-1.5 text-slate-600 hover:text-blue-600 rounded-full text-sm font-medium transition-colors flex items-center gap-2">History</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="text-right hidden sm:block">
+                <div class="text-sm font-bold text-slate-900" id="user-name">User Name</div>
+                <div class="text-xs text-slate-500" id="user-email">user@example.com</div>
+            </div>
+            <button onclick="logout()" class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-12">
+        <div class="text-center mb-10">
+            <div class="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-200">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900">Drug Interaction Checker</h1>
+            <p class="text-slate-500 text-lg">Check for potential interactions between two medicines</p>
+        </div>
+
+        <div class="max-w-3xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+            <div class="p-6 space-y-6">
+                <div>
+                    <div class="text-slate-900 font-bold mb-2">First Medicine</div>
+                    <div id="med1-card" class="rounded-2xl border border-slate-200 p-4 bg-slate-50 flex items-center justify-between">
+                        <div>
+                            <div id="med1-name" class="text-lg font-bold text-slate-900">Paracetamol</div>
+                            <div id="med1-sub" class="text-slate-500">(Acetaminophen)</div>
+                            <div id="med1-tag" class="text-xs inline-block mt-1 px-2 py-1 rounded-md bg-slate-100 text-slate-700">pain_relief</div>
+                        </div>
+                        <button onclick="startSearch(1)" class="text-blue-600 font-semibold">Change</button>
+                    </div>
+                    <div id="med1-search" class="hidden mt-2">
+                        <input id="med1-input" type="text" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search medicine...">
+                        <div id="med1-suggestions" class="mt-2 rounded-xl border border-slate-200 bg-white shadow-sm hidden"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="text-slate-900 font-bold mb-2">Second Medicine</div>
+                    <div id="med2-card" class="rounded-2xl border border-slate-200 p-4 bg-slate-50 flex items-center justify-between">
+                        <div>
+                            <div id="med2-name" class="text-lg font-bold text-slate-900">Nasal Decongestant Spray</div>
+                            <div id="med2-sub" class="text-slate-500">(Oxymetazoline)</div>
+                            <div id="med2-tag" class="text-xs inline-block mt-1 px-2 py-1 rounded-md bg-slate-100 text-slate-700">decongestant</div>
+                        </div>
+                        <button onclick="startSearch(2)" class="text-blue-600 font-semibold">Change</button>
+                    </div>
+                    <div id="med2-search" class="hidden mt-2">
+                        <input id="med2-input" type="text" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search medicine...">
+                        <div id="med2-suggestions" class="mt-2 rounded-xl border border-slate-200 bg-white shadow-sm hidden"></div>
+                    </div>
+                </div>
+
+                <button onclick="checkInteraction()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-2xl shadow-xl">Check Interaction</button>
+            </div>
+        </div>
+
+        <div id="result" class="max-w-3xl mx-auto mt-8 hidden">
+            <div id="severity" class="rounded-3xl p-6 mb-6 shadow-xl border"></div>
+            <div id="description" class="rounded-2xl border border-slate-200 bg-slate-50 p-5 mb-4"></div>
+            <div id="precautions" class="rounded-2xl border border-amber-200 bg-amber-50 p-5"></div>
+        </div>
+    </main>
+
+    <script>
+        const email = localStorage.getItem('userEmail') || 'user@example.com';
+        const name = email.split('@')[0];
+        document.getElementById('user-name').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+        document.getElementById('user-email').textContent = email;
+        function logout(){ localStorage.removeItem('userEmail'); window.location.href='/index.html'; }
+
+        const meds = [
+            { id:'paracetamol', name:'Paracetamol', sub:'(Acetaminophen)', tag:'pain_relief' },
+            { id:'ibuprofen', name:'Ibuprofen', sub:'(NSAID)', tag:'pain_relief' },
+            { id:'aspirin', name:'Aspirin', sub:'(Acetylsalicylic Acid)', tag:'antiplatelet' },
+            { id:'cetirizine', name:'Cetirizine', sub:'(Antihistamine)', tag:'allergy' },
+            { id:'diphenhydramine', name:'Diphenhydramine', sub:'(Antihistamine)', tag:'allergy' },
+            { id:'dextromethorphan', name:'Dextromethorphan', sub:'(Cough Suppressant)', tag:'cough' },
+            { id:'guaifenesin', name:'Guaifenesin', sub:'(Expectorant)', tag:'cough' },
+            { id:'pseudoephedrine', name:'Pseudoephedrine', sub:'(Decongestant)', tag:'decongestant' },
+            { id:'oxymetazoline', name:'Nasal Decongestant Spray', sub:'(Oxymetazoline)', tag:'decongestant' },
+            { id:'omeprazole', name:'Omeprazole', sub:'(PPI)', tag:'acid_reducer' },
+            { id:'amoxicillin', name:'Amoxicillin', sub:'(Antibiotic)', tag:'antibiotic' },
+            { id:'azithromycin', name:'Azithromycin', sub:'(Antibiotic)', tag:'antibiotic' }
+        ];
+        const interactions = {
+            'aspirin__ibuprofen': { severity:'MODERATE', desc:'Increased bleeding risk and reduced antiplatelet effect of aspirin.', prec:['Avoid routine combination unless advised','Use lowest effective doses','Monitor for stomach bleeding symptoms'] },
+            'diphenhydramine__dextromethorphan': { severity:'MODERATE', desc:'Additive CNS effects causing drowsiness and impaired attention.', prec:['Avoid driving/operating machinery','Use at night if possible','Avoid alcohol and other sedatives'] },
+            'cetirizine__diphenhydramine': { severity:'MILD', desc:'Additive sedation and dry mouth.', prec:['Prefer a single antihistamine','Stay hydrated','Avoid alcohol'] },
+            'pseudoephedrine__oxymetazoline': { severity:'MODERATE', desc:'Elevated blood pressure and heart rate.', prec:['Limit duration of use','Avoid in uncontrolled hypertension','Use lowest effective dose'] },
+            'dextromethorphan__guaifenesin': { severity:'NONE', desc:'Common safe combination for cough relief.', prec:['Follow package dosing','Hydrate well','Stop if cough lasts >7 days'] },
+            'ibuprofen__paracetamol': { severity:'MILD', desc:'Generally safe. Alternate dosing may improve pain relief.', prec:['Take ibuprofen with food','Do not exceed max daily doses','Avoid alcohol'] },
+            'amoxicillin__azithromycin': { severity:'MILD', desc:'Usually safe but duplicative antibiotic coverage.', prec:['Use only when prescribed','Report side effects (diarrhea, rash)','Do not self-medicate antibiotics'] },
+            'aspirin__paracetamol': { severity:'MILD', desc:'Generally safe with caution for stomach irritation.', prec:['Use lowest effective doses','Take aspirin with food','Avoid alcohol'] },
+            'ibuprofen__pseudoephedrine': { severity:'MILD', desc:'Potential blood pressure elevation.', prec:['Monitor blood pressure if hypertensive','Avoid prolonged use','Seek care if palpitations occur'] }
+        };
+        let med1 = meds[0];
+        let med2 = meds.find(m=>m.id==='oxymetazoline');
+
+        function setCard(n, m){
+            document.getElementById(`med${n}-name`).textContent = m.name;
+            document.getElementById(`med${n}-sub`).textContent = m.sub;
+            document.getElementById(`med${n}-tag`).textContent = m.tag;
+            document.getElementById(`med${n}-search`).classList.add('hidden');
+            document.getElementById(`med${n}-card`).classList.remove('hidden');
+            if(n===1) med1=m; else med2=m;
+        }
+        function startSearch(n){
+            document.getElementById(`med${n}-card`).classList.add('hidden');
+            document.getElementById(`med${n}-search`).classList.remove('hidden');
+            const input = document.getElementById(`med${n}-input`);
+            const sugg = document.getElementById(`med${n}-suggestions`);
+            input.value='';
+            sugg.innerHTML='';
+            sugg.classList.add('hidden');
+            input.oninput = () => {
+                const q = input.value.toLowerCase();
+                const list = meds.filter(m => m.name.toLowerCase().includes(q) || m.sub.toLowerCase().includes(q));
+                sugg.innerHTML = list.map(m => `<div class="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b last:border-0" onclick="setCard(${n}, ${JSON.stringify(m).replace(/"/g,'&quot;')})"><div class="font-bold text-slate-900">${m.name}</div><div class="text-slate-500">${m.sub}</div></div>`).join('');
+                sugg.classList.toggle('hidden', list.length===0);
+            };
+        }
+        function badge(sev){
+            if(sev==='SEVERE') return 'bg-red-600';
+            if(sev==='MODERATE') return 'bg-amber-500';
+            if(sev==='MILD') return 'bg-green-600';
+            return 'bg-slate-500';
+        }
+        function checkInteraction(){
+            const key = [med1.id, med2.id].sort().join('__');
+            const data = interactions[key] || { severity:'NONE', desc:'No known significant interaction for typical over-the-counter use.', prec:['Follow labeled dosing','Consult a professional if symptoms worsen','Review personal conditions before use'] };
+            document.getElementById('severity').className = `rounded-3xl p-6 mb-6 shadow-xl border ${badge(data.severity)} bg-opacity-10`;
+            document.getElementById('severity').innerHTML = `
+                <div class="flex items-center gap-4">
+                    <div class="${badge(data.severity)} w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold text-slate-900">${data.severity} Interaction</div>
+                        <div class="text-slate-600">${med1.name} + ${med2.name}</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('description').innerHTML = `<div class="font-bold text-slate-900 mb-2">Interaction Summary</div><div class="text-slate-700">${data.desc}</div>`;
+            document.getElementById('precautions').innerHTML = `<div class="font-bold text-slate-900 mb-2">Precautions</div><ul class="list-disc ml-5 space-y-1 text-slate-700">${data.prec.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+            document.getElementById('result').classList.remove('hidden');
+            saveDrugCheck(med1, med2, data);
+        }
+        function saveDrugCheck(m1, m2, info){
+            try{
+                fetch('/api/drug-check', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email,
+                        medicine1: m1.name,
+                        medicine2: m2.name,
+                        severity: info.severity,
+                        interaction: info.desc,
+                        precautions: info.prec
+                    })
+                }).then(()=>{}).catch(()=>{});
+            }catch(e){}
+        }
+    </script>
+</body>
+</html>
